@@ -1,11 +1,14 @@
 package service
 
-import "github.com/SyberiaEmperor/avito_task/pkg/repository"
+import (
+	"github.com/SyberiaEmperor/avito_task/models"
+	"github.com/SyberiaEmperor/avito_task/pkg/repository"
+)
 
 type Account interface {
-	GetAccountInfo() error
-	Deposit() error
-	Debit() error
+	GetAccountInfo(accountId int) (float64,error)
+	Deposit(req models.AccountRequest) error
+	Debit(req models.AccountRequest) error
 	Transfer() error
 }
 

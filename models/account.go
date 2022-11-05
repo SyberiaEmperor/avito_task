@@ -1,6 +1,10 @@
 package models
 
+import "time"
+
 type Account struct {
-	Id      int     `json:"id"`
-	Balance float64 `json:"balance"`
+	ID        uint    `json:"id" gorm:"primaryKey"`
+	Balance   float64 `json:"balance"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

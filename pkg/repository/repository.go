@@ -1,9 +1,14 @@
 package repository
 
+import (
+	"github.com/SyberiaEmperor/avito_task/models"
+	"gorm.io/gorm"
+)
+
 type Account interface {
-	GetAccountInfo() error
-	Deposit() error
-	Debit() error
+	GetAccountInfo(accountId int) (float64, error)
+	Deposit(req models.AccountRequest) error
+	Debit(req models.AccountRequest) error
 	Transfer() error
 }
 
@@ -11,8 +16,8 @@ type Repository struct {
 	Account
 }
 
-func NewRepository() *Repository {
+func NewRepository(db *gorm.DB) *Repository {
 	return &Repository{
-		Account: NewAccountService(),
+		Account: NewAccountService(db),
 	}
 }
