@@ -4,16 +4,21 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/SyberiaEmperor/avito_task/models"
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) getAccountInfo(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+const (
+	accountId = "id"
+)
 
-	// if !ok {
-	// 	newErrorResponse(c, http.StatusInternalServerError, "id not found")
-	// 	return
-	// }
+func (h *Handler) getAccountInfo(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param(accountId))
+
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, "Incorrect id")
+		return
+	}
 
 	res, err := h.service.GetAccountInfo(id)
 
@@ -22,12 +27,28 @@ func (h *Handler) getAccountInfo(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"balande": res,
+		"balance": res,
 	})
 }
 
 func (h *Handler) deposit(c *gin.Context) {
+	var req models.AccountRequest
 
+	if err := c.BindJSON(&req); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	err := h.service.Deposit(req)
+
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"id": req.ID,
+	})
 }
 
 func (h *Handler) debit(c *gin.Context) {
