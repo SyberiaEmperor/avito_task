@@ -25,6 +25,6 @@ func (acc *AccountService) Debit(req models.AccountRequest) error {
 	return acc.repo.Debit(req)
 }
 
-func (acc *AccountService) Transfer() error {
-	return nil
+func (acc *AccountService) Transfer(req models.TransferRequest) error {
+	return acc.repo.Transfer(req)
 }

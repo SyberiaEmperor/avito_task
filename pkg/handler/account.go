@@ -56,5 +56,22 @@ func (h *Handler) debit(c *gin.Context) {
 }
 
 func (h *Handler) transfer(c *gin.Context) {
+	var req models.TransferRequest
 
+	if err := c.BindJSON(&req); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	err := h.service.Transfer(req)
+
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"sender_id":req.SenderID,
+		"receiver_id":req.ReceiverID,
+	})
 }

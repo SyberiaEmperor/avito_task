@@ -34,6 +34,7 @@ func NewPostgresDB(cfg Config) (*gorm.DB, error) {
 	}
 
 	db.AutoMigrate(&models.Account{})
+	db.AutoMigrate(&models.Transaction{})
 
 	return db, err
 }

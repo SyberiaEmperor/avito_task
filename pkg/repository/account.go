@@ -53,6 +53,33 @@ func (acc *AccountService) Debit(req models.AccountRequest) error {
 	return nil
 }
 
-func (acc *AccountService) Transfer() error {
+func (acc *AccountService) Transfer(req models.TransferRequest) error {
+	var senderAccount models.Account
+	var receiverAccount models.Account
+
+	res := acc.db.First(&senderAccount, req.SenderID)
+
+	if res.Error != nil {
+		return fmt.Errorf("invalid sender id")
+	}
+
+	res = acc.db.First(&receiverAccount, req.ReceiverID)
+
+	if res.Error != nil {
+		return fmt.Errorf("invalid receiver id")
+	}
+
+	if senderAccount.Balance-req.Amount < 0 {
+		return fmt.Errorf("not enough money for transaction")
+	}
+
+	senderAccount.Balance -= req.Amount
+	receiverAccount.Balance += req.Amount
+
+	acc.db.Save(&senderAccount)
+	acc.db.Save(&receiverAccount)
+
+	acc.db.Save(&models.Transaction{SenderID: req.SenderID, ReceiverID: req.ReceiverID, Amount: req.Amount})
+
 	return nil
 }

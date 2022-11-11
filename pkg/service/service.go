@@ -9,7 +9,7 @@ type Account interface {
 	GetAccountInfo(accountId int) (float64,error)
 	Deposit(req models.AccountRequest) error
 	Debit(req models.AccountRequest) error
-	Transfer() error
+	Transfer(req models.TransferRequest) error
 }
 
 type Service struct {
