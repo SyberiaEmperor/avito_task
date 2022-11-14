@@ -19,8 +19,8 @@ func NewAccountService(db *gorm.DB) *AccountService {
 
 func (acc *AccountService) GetAccountInfo(accountId int) (float64, error) {
 	var account models.Account
-	acc.db.First(&account, accountId)
-	return account.Balance, nil
+	res := acc.db.First(&account, accountId)
+	return account.Balance, res.Error
 }
 
 func (acc *AccountService) Deposit(req models.AccountRequest) error {
