@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/SyberiaEmperor/avito_task/pkg/handler"
@@ -9,18 +8,21 @@ import (
 	"github.com/SyberiaEmperor/avito_task/pkg/service"
 	"github.com/SyberiaEmperor/avito_task/server"
 	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
 func main() {
 
+	logrus.SetFormatter(new(logrus.JSONFormatter))
+
 	if err := initConfig(); err != nil {
-		fmt.Printf("Initial config not found\n")
+		logrus.Fatalf("error initializing configs: %s",err.Error())
 		return
 	}
 
 	if err := godotenv.Load("../.env"); err != nil {
-		fmt.Printf("Environment not found\n")
+		logrus.Fatalf("error initializing environment: %s",err.Error())
 		return
 	}
 
@@ -35,7 +37,7 @@ func main() {
 	})
 
 	if err != nil {
-		fmt.Printf("Database connection failed\n")
+		logrus.Fatalf("Database connection failed: %s",err.Error())
 		return
 	}
 
