@@ -17,21 +17,21 @@ import (
 
 type Suite struct {
 	suite.Suite
-	DB *gorm.DB
+	DB   *gorm.DB
 	mock sqlmock.Sqlmock
 
-	repo repository.Repository
+	repo    repository.Repository
 	account models.Account
 }
 
 func (s *Suite) SetupSuite() {
 	var (
-		db *sql.DB
+		db  *sql.DB
 		err error
 	)
 
 	db, s.mock, err = sqlmock.New()
-	require.NoError(s.T(),err)
+	require.NoError(s.T(), err)
 
 	dialector := postgres.New(postgres.Config{
 		DSN:                  "sqlmock_db_0",
@@ -40,8 +40,8 @@ func (s *Suite) SetupSuite() {
 		PreferSimpleProtocol: true,
 	})
 
-	gdb, err := gorm.Open(dialector,&gorm.Config{})
-	require.NoError(s.T(),err)
+	gdb, err := gorm.Open(dialector, &gorm.Config{})
+	require.NoError(s.T(), err)
 
 	s.repo = *repository.NewRepository(gdb)
 }
@@ -49,31 +49,31 @@ func (s *Suite) SetupSuite() {
 func (s *Suite) Test_RepositoryGetAccountInfo_NoAccount() {
 
 	id := 1
-	
+
 	s.mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "accounts" WHERE "accounts"."id" = $1 ORDER BY "accounts"."id" LIMIT 1`)).WithArgs(id).
 		WillReturnError(fmt.Errorf("record not found"))
 
 	_, err := s.repo.GetAccountInfo(id)
-	
-	require.Error(s.T(),err)
+
+	require.Error(s.T(), err)
 }
 
 func (s *Suite) Test_RepositoryGetAccountInfo_AccountExists() {
 
-	s.repo.Deposit(models.AccountRequest{ID:1,Income: 100.0})
+	s.repo.Deposit(models.AccountRequest{ID: 1, Income: 100.0})
 
 	id := 1
 	balance := 100.0
-	
+
 	s.mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "accounts" WHERE "accounts"."id" = $1 ORDER BY "accounts"."id" LIMIT 1`)).WithArgs(id).
-		WillReturnRows(sqlmock.NewRows([]string{"id","balance"}).AddRow(id,balance))
+		WillReturnRows(sqlmock.NewRows([]string{"id", "balance"}).AddRow(id, balance))
 
 	res, err := s.repo.GetAccountInfo(id)
-	
-	require.NoError(s.T(),err)
-	require.Equal(s.T(),balance,res)
+
+	require.NoError(s.T(), err)
+	require.Equal(s.T(), balance, res)
 }
 
 func TestRepository(t *testing.T) {
-	suite.Run(t,new(Suite))
+	suite.Run(t, new(Suite))
 }

@@ -15,10 +15,12 @@ import (
 func main() {
 
 	if err := initConfig(); err != nil {
+		fmt.Printf("Initial config not found\n")
 		return
 	}
 
 	if err := godotenv.Load("../.env"); err != nil {
+		fmt.Printf("Environment not found\n")
 		return
 	}
 

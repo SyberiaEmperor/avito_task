@@ -1,15 +1,18 @@
 services:
   app:
     build: ./
-    restart: always
     ports:
       - 8000:8000
     depends_on:
       - db
+    environment:
+      - DB_PASSWORD=12345
 
   db:
     image: postgres
     environment:
-      POSTGRES_PASSWORD: 12345
+      - POSTGRES_PASSWORD=12345
     ports:
-      - 5436:5432
+      - 5432:5432
+    expose:
+      - 5432

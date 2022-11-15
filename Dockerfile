@@ -1,11 +1,10 @@
 FROM golang:1.18
 
-RUN go version
-ENV GOPATH=/
-
+WORKDIR /avito_app
 COPY ./ ./
 
 RUN go mod download
-RUN go build -o app ./cmd/main.go
+RUN go build -o ./cmd/app ./cmd/main.go
 
+WORKDIR /avito_app/cmd
 CMD ["./app"]
